@@ -70,6 +70,10 @@
       currentYearEl.textContent = new Date().getFullYear();
     }
 
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    const userAgent = navigator.userAgent || '';
+    const isAndroid = /android/i.test(userAgent);
+
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch((error) => {
@@ -83,12 +87,26 @@
     const installButton = document.getElementById('install-button');
     const installDismiss = document.getElementById('install-dismiss');
 
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      deferredPrompt = event;
+    const hideInstallBanner = () => {
+      if (installBanner) {
+        installBanner.setAttribute('data-visible', 'false');
+      }
+    };
+
+    const showInstallBanner = () => {
       if (installBanner) {
         installBanner.setAttribute('data-visible', 'true');
       }
+    };
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      if (!isAndroid || isStandalone) {
+        return;
+      }
+
+      event.preventDefault();
+      deferredPrompt = event;
+      showInstallBanner();
     });
 
     if (installButton) {
@@ -103,27 +121,25 @@
         deferredPrompt = null;
         installButton.disabled = false;
 
-        if (installBanner) {
-          installBanner.setAttribute('data-visible', 'false');
-        }
+        hideInstallBanner();
       });
     }
 
     if (installDismiss) {
       installDismiss.addEventListener('click', () => {
         deferredPrompt = null;
-        if (installBanner) {
-          installBanner.setAttribute('data-visible', 'false');
-        }
+        hideInstallBanner();
       });
     }
 
     window.addEventListener('appinstalled', () => {
       deferredPrompt = null;
-      if (installBanner) {
-        installBanner.setAttribute('data-visible', 'false');
-      }
+      hideInstallBanner();
     });
+
+    if (!isAndroid || isStandalone) {
+      hideInstallBanner();
+    }
   </script>
 </body>
 </html>
