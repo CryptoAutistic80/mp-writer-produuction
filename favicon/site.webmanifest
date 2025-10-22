@@ -1,6 +1,9 @@
 {
   "name": "MP Writer",
-  "short_name": "MP",
+  "short_name": "MP Writer",
+  "description": "Craft respectful, well-researched letters to your MP in minutes with MP Writer.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "icons": [
     {
       "src": "/favicon/android-chrome-192x192.png",
