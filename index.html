@@ -53,8 +53,77 @@
     </footer>
   </main>
 
+  <div id="install-banner" class="install-banner" data-visible="false" role="dialog" aria-live="polite">
+    <div class="install-text">
+      <strong>Add MP Writer</strong>
+      <span>Install the app for quick access and offline support.</span>
+    </div>
+    <div class="install-actions">
+      <button id="install-button" class="install-button" type="button">Install</button>
+      <button id="install-dismiss" class="install-dismiss" type="button" aria-label="Dismiss install prompt">&times;</button>
+    </div>
+  </div>
+
   <script>
-    document.getElementById('current-year').textContent = new Date().getFullYear();
+    const currentYearEl = document.getElementById('current-year');
+    if (currentYearEl) {
+      currentYearEl.textContent = new Date().getFullYear();
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch((error) => {
+          console.error('Service worker registration failed:', error);
+        });
+      });
+    }
+
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('install-banner');
+    const installButton = document.getElementById('install-button');
+    const installDismiss = document.getElementById('install-dismiss');
+
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault();
+      deferredPrompt = event;
+      if (installBanner) {
+        installBanner.setAttribute('data-visible', 'true');
+      }
+    });
+
+    if (installButton) {
+      installButton.addEventListener('click', async () => {
+        if (!deferredPrompt) {
+          return;
+        }
+
+        installButton.disabled = true;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installButton.disabled = false;
+
+        if (installBanner) {
+          installBanner.setAttribute('data-visible', 'false');
+        }
+      });
+    }
+
+    if (installDismiss) {
+      installDismiss.addEventListener('click', () => {
+        deferredPrompt = null;
+        if (installBanner) {
+          installBanner.setAttribute('data-visible', 'false');
+        }
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      if (installBanner) {
+        installBanner.setAttribute('data-visible', 'false');
+      }
+    });
   </script>
 </body>
 </html>

@@ -187,6 +187,96 @@ h1 {
   gap: 6px;
 }
 
+.install-banner {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 360px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(64, 97, 240, 0.25);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16);
+  transform: translateY(24px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 200ms ease;
+  z-index: 1000;
+}
+
+.install-banner[data-visible='true'] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.install-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #1b2a4b;
+}
+
+.install-text strong {
+  font-size: 0.95rem;
+}
+
+.install-text span {
+  font-size: 0.85rem;
+  color: rgba(71, 84, 103, 0.85);
+}
+
+.install-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+.install-button {
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #4061f0, #8c95ff);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.install-button:hover,
+.install-button:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(64, 97, 240, 0.24);
+}
+
+.install-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.install-dismiss {
+  border: none;
+  background: transparent;
+  color: rgba(71, 84, 103, 0.6);
+  font-size: 1.4rem;
+  line-height: 1;
+  padding: 4px;
+  cursor: pointer;
+  transition: color 120ms ease, transform 120ms ease;
+}
+
+.install-dismiss:hover,
+.install-dismiss:focus {
+  color: rgba(71, 84, 103, 0.9);
+  transform: scale(1.05);
+}
+
 @media (max-width: 640px) {
   body {
     padding-top: 32px;
@@ -208,5 +298,23 @@ h1 {
     width: 100%;
     padding: 28px;
     margin-right: 0;
+  }
+
+  .install-banner {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    gap: 12px;
+    padding: 16px 18px;
+  }
+
+  .install-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+
+  .install-button {
+    flex: 1;
   }
 }
